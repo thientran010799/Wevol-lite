@@ -1,0 +1,86 @@
+:root {
+  /* ── Pastel Blue & Pink Palette ─────────────────────────── */
+  --background:          #fef5f8;
+  --card:                #ffffff;
+  --sidebar:             rgba(255, 255, 255, 0.7);
+
+  --pastel-blue:         #a8d5e2;
+  --pastel-blue-light:   #d4eef5;
+  --pastel-blue-dark:    #7ab8cc;
+
+  --pastel-pink:         #ffc1cc;
+  --pastel-pink-light:   #ffe0e6;
+  --pastel-pink-lighter: #fff0f3;
+  --pastel-pink-dark:    #ff9db0;
+
+  --foreground:          #2d2d3a;
+  --muted-foreground:    #8b7a8a;
+
+  --primary:             #a8d5e2;
+  --secondary:           #ffc1cc;
+  --destructive:         #e05252;
+  --border:              rgba(168, 213, 226, 0.2);
+  --sidebar-border:      rgba(168, 213, 226, 0.25);
+  --sidebar-accent:      rgba(168, 213, 226, 0.15);
+
+  --gradient-primary:    linear-gradient(135deg, #a8d5e2 0%, #ffc1cc 100%);
+  --gradient-soft:         linear-gradient(135deg, #d4eef5 0%, #ffe0e6 100%);
+  --gradient-soft-reversed: linear-gradient(135deg, var(--pastel-pink-light) 0%, var(--pastel-blue-light) 100%);
+
+  /* ── Border Radius System ────────────────────────────────── */
+  --radius:              1rem;
+  --radius-sm:           12px;
+  --radius-md:           14px;
+  --radius-lg:           16px;
+  --radius-xl:           20px;
+
+  /* ── Legacy aliases (backward compatibility) ─────────────── */
+  --color-bg:            var(--background);
+  --color-surface:       var(--card);
+  --color-sidebar:       var(--sidebar);
+  --color-primary:       var(--pastel-blue);
+  --color-primary-dark:  var(--pastel-blue-dark);
+  --color-text:          var(--foreground);
+  --color-text-muted:    var(--muted-foreground);
+  --color-muted:         var(--muted-foreground);
+  --color-hint:          var(--muted-foreground);
+  --color-border:        var(--border);
+  --color-danger:        var(--destructive);
+  --color-rose:          var(--pastel-pink);
+  --color-rose-dark:     var(--pastel-pink-dark);
+  --color-blush:         var(--pastel-pink-light);
+  --color-blush-light:   var(--pastel-pink-lighter);
+  --color-cream:         #F3EBDB;
+  --color-cream-dark:    #e0d4be;
+  --color-sage:          #B8BB79;
+  --color-sage-dark:     #7a7d3f;
+  --color-sage-light:    #eef0d8;
+  --color-sidebar-text:  var(--muted-foreground);
+  --color-sidebar-active: var(--pastel-pink);
+}
+
+.dark {
+  --background:          #1a1a2e;
+  --card:                #252541;
+  --sidebar:             rgba(37, 37, 65, 0.8);
+
+  --pastel-blue:         #7ab8cc;
+  --pastel-pink:         #ff9db0;
+
+  --foreground:          #f5f5f7;
+  --muted-foreground:    #b8b8c5;
+  --sidebar-border:      rgba(122, 184, 204, 0.2);
+
+  /* ── Dark mode legacy aliases ────────────────────────────── */
+  --color-bg:            var(--background);
+  --color-surface:       var(--card);
+  --color-sidebar:       var(--sidebar);
+  --color-text:          var(--foreground);
+  --color-text-muted:    var(--muted-foreground);
+  --color-muted:         var(--muted-foreground);
+  --color-hint:          var(--muted-foreground);
+  --color-rose:          var(--pastel-pink);
+  --color-rose-dark:     var(--pastel-pink-dark);
+  --color-primary:       var(--pastel-blue);
+  --color-primary-dark:  var(--pastel-blue-dark);
+}

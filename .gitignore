@@ -1,0 +1,31 @@
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+.mvn/wrapper/maven-wrapper.jar
+.settings/
+.project
+.classpath
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Frontend
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Docker
+.docker/

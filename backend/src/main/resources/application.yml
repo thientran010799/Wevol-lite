@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: wevol-backend
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/wevol}
+    username: ${DB_USER:wevol}
+    password: ${DB_PASS:secret}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: public
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+r2:
+  account-id: ${R2_ACCOUNT_ID}
+  access-key: ${R2_ACCESS_KEY}
+  secret-key: ${R2_SECRET_KEY}
+  bucket: ${R2_BUCKET:wevol-media}
+  public-url: ${R2_PUBLIC_URL:https://pub-xxx.r2.dev}
+
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
