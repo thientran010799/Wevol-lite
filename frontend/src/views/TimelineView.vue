@@ -152,9 +152,9 @@ const editDateInput = ref('')
 
 const startDate = computed(() => authStore.couple?.start_date || null)
 
-function saveStartDate() {
+async function saveStartDate() {
   if (!dateInput.value) return
-  authStore.setStartDate(dateInput.value)
+  await authStore.updateCouple({ ...authStore.couple, start_date: dateInput.value })
 }
 
 function openEditDate() {
@@ -162,9 +162,9 @@ function openEditDate() {
   editingDate.value = true
 }
 
-function saveEditedDate() {
+async function saveEditedDate() {
   if (!editDateInput.value) return
-  authStore.setStartDate(editDateInput.value)
+  await authStore.updateCouple({ ...authStore.couple, start_date: editDateInput.value })
   editingDate.value = false
 }
 

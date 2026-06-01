@@ -51,15 +51,19 @@
     <div v-if="successMsg" class="px-4 py-3 rounded-lg text-sm text-green-700 bg-green-50 border border-green-200">
       {{ successMsg }}
     </div>
+    <div v-if="errorMsg" class="px-4 py-3 rounded-lg text-sm text-red-700 bg-red-50 border border-red-200">
+      {{ errorMsg }}
+    </div>
 
     <button
-      class="w-full py-3 rounded-lg font-semibold text-sm text-white transition"
+      class="w-full py-3 rounded-lg font-semibold text-sm text-white transition disabled:opacity-50"
       style="background: var(--color-primary)"
+      :disabled="saving"
       @click="save"
-      @mouseover="e => e.currentTarget.style.background = 'var(--color-primary-dark)'"
+      @mouseover="e => !saving && (e.currentTarget.style.background = 'var(--color-primary-dark)')"
       @mouseleave="e => e.currentTarget.style.background = 'var(--color-primary)'"
     >
-      Save changes
+      {{ saving ? 'Saving…' : 'Save changes' }}
     </button>
 
   </div>
@@ -78,14 +82,24 @@ const form = ref({
 })
 
 const successMsg = ref('')
+const errorMsg   = ref('')
+const saving = ref(false)
 
-function save() {
-  auth.updateCouple({
-    name:        form.value.coupleName.trim() || 'Us',
-    start_date:  form.value.startDate || null,
-    anniversary: form.value.anniversary || null,
-  })
-  successMsg.value = 'Changes saved.'
-  setTimeout(() => { successMsg.value = '' }, 3000)
+async function save() {
+  saving.value = true
+  errorMsg.value = ''
+  try {
+    await auth.updateCouple({
+      name:        form.value.coupleName.trim() || 'Us',
+      start_date:  form.value.startDate || null,
+      anniversary: form.value.anniversary || null,
+    })
+    successMsg.value = 'Changes saved.'
+    setTimeout(() => { successMsg.value = '' }, 3000)
+  } catch (e) {
+    errorMsg.value = 'Failed to save: ' + (e?.response?.data?.message || e?.message || 'unknown error')
+  } finally {
+    saving.value = false
+  }
 }
 </script>
