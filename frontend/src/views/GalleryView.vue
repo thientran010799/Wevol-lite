@@ -19,7 +19,16 @@
       </div>
     </header>
 
-    <div v-if="galleryStore.albums.length" class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+    <!-- Skeleton while loading -->
+    <div v-if="galleryStore.loading" class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+      <div v-for="n in 6" :key="n" class="rounded-2xl p-6 md:p-8 flex flex-col items-center gap-3" style="background: var(--card)">
+        <div class="skeleton w-14 h-14 rounded-2xl" />
+        <div class="skeleton h-5 w-2/3" />
+        <div class="skeleton h-4 w-1/3" />
+      </div>
+    </div>
+
+    <div v-else-if="galleryStore.albums.length" class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
       <router-link
         v-for="(album, index) in galleryStore.albums"
         :key="album.id"
@@ -36,7 +45,7 @@
     </div>
 
     <EmptyState
-      v-else
+      v-else-if="!galleryStore.albums.length"
       emoji="🖼️"
       message="No albums yet — create your first album to start collecting photos."
     />

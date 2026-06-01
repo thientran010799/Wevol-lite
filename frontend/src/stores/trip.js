@@ -157,14 +157,18 @@ function normalizeTrip(t) {
 }
 
 export const useTripStore = defineStore('trip', () => {
-  const trips = ref([...MOCK_TRIPS])
+  const trips = ref([])
+  const loading = ref(false)
 
   async function fetchAll() {
+    loading.value = true
     try {
       const { data } = await api.get('/trips')
       trips.value = data.map(normalizeTrip)
     } catch {
-      // keep mock data when backend is unavailable
+      // keep empty on error
+    } finally {
+      loading.value = false
     }
   }
 
@@ -375,5 +379,5 @@ export const useTripStore = defineStore('trip', () => {
     trips.value = trips.value.filter(t => String(t.id) !== String(id))
   }
 
-  return { trips, fetchAll, getById, create, update, addDay, addStop, updateStop, removeStop, removeDay, persistStopOrder, remove }
+  return { trips, loading, fetchAll, getById, create, update, addDay, addStop, updateStop, removeStop, removeDay, persistStopOrder, remove }
 })

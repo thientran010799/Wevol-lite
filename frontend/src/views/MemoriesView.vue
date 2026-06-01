@@ -20,9 +20,22 @@
       </div>
     </header>
 
+    <!-- Skeleton while loading -->
+    <div v-if="memoryStore.loading" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+      <div v-for="n in 6" :key="n" class="flex gap-4 p-4 md:p-6 rounded-2xl" style="background: var(--card)">
+        <div class="skeleton w-24 h-24 rounded-2xl flex-shrink-0" />
+        <div class="flex-1 flex flex-col justify-center gap-2">
+          <div class="skeleton h-5 w-3/4" />
+          <div class="skeleton h-4 w-1/3" />
+          <div class="skeleton h-4 w-full" />
+          <div class="skeleton h-4 w-2/3" />
+        </div>
+      </div>
+    </div>
+
     <!-- Empty state -->
     <EmptyState
-      v-if="!memoryStore.memories.length"
+      v-else-if="!memoryStore.memories.length"
       emoji="💝"
       message="No memories yet. Add your first shared moment!"
     />

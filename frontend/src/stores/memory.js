@@ -44,14 +44,18 @@ function toApi(payload) {
 }
 
 export const useMemoryStore = defineStore('memory', () => {
-  const memories = ref([...MOCK_MEMORIES])
+  const memories = ref([])
+  const loading = ref(false)
 
   async function fetchAll() {
+    loading.value = true
     try {
       const { data } = await api.get('/memories')
       memories.value = data.map(fromApi)
     } catch {
-      // keep mock data when backend is unavailable
+      // keep empty on error
+    } finally {
+      loading.value = false
     }
   }
 
@@ -108,5 +112,5 @@ export const useMemoryStore = defineStore('memory', () => {
     memories.value = memories.value.filter(m => String(m.id) !== String(id))
   }
 
-  return { memories, fetchAll, getById, create, update, remove }
+  return { memories, loading, fetchAll, getById, create, update, remove }
 })

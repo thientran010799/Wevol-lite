@@ -62,16 +62,18 @@ function normalizeAlbum(raw) {
 
 export const useGalleryStore = defineStore('gallery', () => {
   const albums = ref([])
+  const loading = ref(false)
 
   async function fetchAll() {
+    loading.value = true
     try {
       const { data } = await api.get('/albums')
       const list = Array.isArray(data) ? data : (data.content ?? data.albums ?? [])
       albums.value = list.map(normalizeAlbum)
     } catch {
-      if (albums.value.length === 0) {
-        albums.value = MOCK_ALBUMS.map(a => ({ ...a, photos: [...a.photos] }))
-      }
+      // keep empty on error
+    } finally {
+      loading.value = false
     }
   }
 
@@ -143,5 +145,5 @@ export const useGalleryStore = defineStore('gallery', () => {
     if (album) album.photos = album.photos.filter(p => p.id !== photoId)
   }
 
-  return { albums, fetchAll, fetchAlbum, getById, create, update, remove, addPhoto, removePhoto }
+  return { albums, loading, fetchAll, fetchAlbum, getById, create, update, remove, addPhoto, removePhoto }
 })

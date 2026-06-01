@@ -19,55 +19,82 @@
       </div>
     </header>
 
-    <!-- Upcoming banner -->
-    <div v-if="upcoming" class="rounded-2xl p-5 mb-6 flex items-center justify-between"
-         style="background: var(--gradient-soft)">
-      <div>
-        <p class="text-xs uppercase tracking-widest mb-1" style="color: var(--muted-foreground)">Next trip</p>
-        <p class="text-lg font-bold" style="color: var(--foreground)">{{ upcoming.name }}</p>
-        <p class="text-xs mt-1" style="color: var(--muted-foreground)">{{ upcoming.dates }}</p>
+    <!-- Skeleton while loading -->
+    <div v-if="tripStore.loading">
+      <div class="skeleton rounded-2xl h-24 mb-6" />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <div v-for="n in 4" :key="n" class="rounded-2xl p-5" style="background: var(--card)">
+          <div class="flex items-start justify-between gap-2 mb-3">
+            <div class="flex-1 flex flex-col gap-2">
+              <div class="skeleton h-5 w-3/4" />
+              <div class="skeleton h-4 w-1/3" />
+            </div>
+            <div class="skeleton h-6 w-20 rounded-full" />
+          </div>
+          <div class="skeleton h-32 rounded-xl" />
+        </div>
       </div>
-      <router-link
-        :to="`/trips/${upcoming.id}`"
-        class="text-sm px-4 py-2 rounded-lg font-medium shrink-0"
-        style="background: var(--gradient-primary); color: white; text-decoration: none"
-      >
-        View
-      </router-link>
     </div>
 
-    <!-- Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-      <router-link
-        v-for="trip in tripStore.trips"
-        :key="trip.id"
-        :to="`/trips/${trip.id}`"
-        class="rounded-2xl p-5 block border-2 border-transparent hover:border-[var(--pastel-blue)] hover:shadow-xl transition-all duration-300"
-        style="background: var(--card); text-decoration: none"
-      >
-        <div class="flex items-start justify-between gap-2">
-          <div class="min-w-0">
-            <h3 class="text-base font-semibold truncate" style="color: var(--foreground)">{{ trip.name }}</h3>
-            <p class="text-xs mt-0.5" style="color: var(--muted-foreground)">{{ trip.dates }}</p>
-          </div>
-          <span
-            class="text-xs px-2.5 py-0.5 rounded-full capitalize font-medium shrink-0"
-            :style="`background: ${statusColor[trip.status]}40; color: ${statusColor[trip.status]}`"
-          >
-            {{ trip.status }}
-          </span>
+    <!-- Loaded content -->
+    <template v-else>
+      <!-- Upcoming banner -->
+      <div v-if="upcoming" class="rounded-2xl p-5 mb-6 flex items-center justify-between"
+           style="background: var(--gradient-soft)">
+        <div>
+          <p class="text-xs uppercase tracking-widest mb-1" style="color: var(--muted-foreground)">Next trip</p>
+          <p class="text-lg font-bold" style="color: var(--foreground)">{{ upcoming.name }}</p>
+          <p class="text-xs mt-1" style="color: var(--muted-foreground)">{{ upcoming.dates }}</p>
         </div>
-        <!-- Colored preview block -->
-        <div
-          class="h-32 rounded-xl mt-3 flex items-end p-3"
-          :style="`background: ${statusColor[trip.status]}33`"
+        <router-link
+          :to="`/trips/${upcoming.id}`"
+          class="text-sm px-4 py-2 rounded-lg font-medium shrink-0"
+          style="background: var(--gradient-primary); color: white; text-decoration: none"
         >
-          <p v-if="trip.budget" class="text-xs font-medium" style="color: var(--pastel-pink-dark)">
-            {{ trip.budget }}
-          </p>
-        </div>
-      </router-link>
-    </div>
+          View
+        </router-link>
+      </div>
+
+      <!-- Empty state -->
+      <EmptyState
+        v-if="!tripStore.trips.length"
+        emoji="✈️"
+        message="No trips yet — plan your next adventure!"
+      />
+
+      <!-- Grid -->
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <router-link
+          v-for="trip in tripStore.trips"
+          :key="trip.id"
+          :to="`/trips/${trip.id}`"
+          class="rounded-2xl p-5 block border-2 border-transparent hover:border-[var(--pastel-blue)] hover:shadow-xl transition-all duration-300"
+          style="background: var(--card); text-decoration: none"
+        >
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <h3 class="text-base font-semibold truncate" style="color: var(--foreground)">{{ trip.name }}</h3>
+              <p class="text-xs mt-0.5" style="color: var(--muted-foreground)">{{ trip.dates }}</p>
+            </div>
+            <span
+              class="text-xs px-2.5 py-0.5 rounded-full capitalize font-medium shrink-0"
+              :style="`background: ${statusColor[trip.status]}40; color: ${statusColor[trip.status]}`"
+            >
+              {{ trip.status }}
+            </span>
+          </div>
+          <!-- Colored preview block -->
+          <div
+            class="h-32 rounded-xl mt-3 flex items-end p-3"
+            :style="`background: ${statusColor[trip.status]}33`"
+          >
+            <p v-if="trip.budget" class="text-xs font-medium" style="color: var(--pastel-pink-dark)">
+              {{ trip.budget }}
+            </p>
+          </div>
+        </router-link>
+      </div>
+    </template>
 
     <AddTripDialog v-model="showAdd" />
   </div>
@@ -80,6 +107,7 @@ import { MapPin } from '@lucide/vue'
 import { useTripStore } from '@/stores/trip'
 import SearchBar from '@/components/SearchBar.vue'
 import AddTripDialog from '@/components/AddTripDialog.vue'
+import EmptyState from '@/components/EmptyState.vue'
 
 const tripStore = useTripStore()
 const showAdd = ref(false)

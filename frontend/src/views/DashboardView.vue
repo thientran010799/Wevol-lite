@@ -17,26 +17,38 @@
 
     <!-- Stat cards — horizontal: icon left + number/label right -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-      <div
-        v-for="stat in statCards"
-        :key="stat.label"
-        class="flex items-center gap-4 p-5 rounded-2xl cursor-pointer border-2 border-transparent hover:border-[var(--pastel-blue)] hover:shadow-xl transition-all duration-300"
-        :style="stat.bg"
-        @click="router.push(stat.route)"
-      >
+      <!-- Skeleton stat cards -->
+      <template v-if="isLoading">
+        <div v-for="n in 3" :key="n" class="flex items-center gap-4 p-5 rounded-2xl" style="background: var(--gradient-soft)">
+          <div class="skeleton w-12 h-12 rounded-2xl shrink-0" />
+          <div class="flex flex-col gap-2 flex-1">
+            <div class="skeleton h-8 w-16" />
+            <div class="skeleton h-4 w-24" />
+          </div>
+        </div>
+      </template>
+      <template v-else>
         <div
-          class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-          :style="stat.iconBg"
+          v-for="stat in statCards"
+          :key="stat.label"
+          class="flex items-center gap-4 p-5 rounded-2xl cursor-pointer border-2 border-transparent hover:border-[var(--pastel-blue)] hover:shadow-xl transition-all duration-300"
+          :style="stat.bg"
+          @click="router.push(stat.route)"
         >
-          <component :is="stat.icon" class="w-6 h-6 text-white" />
+          <div
+            class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+            :style="stat.iconBg"
+          >
+            <component :is="stat.icon" class="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <p class="text-4xl font-bold leading-none" style="color: var(--foreground)">
+              {{ stat.value.toLocaleString() }}
+            </p>
+            <p class="text-sm mt-1" style="color: var(--muted-foreground)">{{ stat.label }}</p>
+          </div>
         </div>
-        <div>
-          <p class="text-4xl font-bold leading-none" style="color: var(--foreground)">
-            {{ stat.value.toLocaleString() }}
-          </p>
-          <p class="text-sm mt-1" style="color: var(--muted-foreground)">{{ stat.label }}</p>
-        </div>
-      </div>
+      </template>
     </div>
 
     <!-- Recent Memories -->
@@ -52,7 +64,19 @@
         </router-link>
       </div>
 
-      <EmptyState v-if="recentMemories.length === 0" message="No memories yet — start capturing moments together." />
+      <!-- Skeleton recent memories -->
+      <div v-if="memoryStore.loading" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <div v-for="n in 4" :key="n" class="flex items-center gap-4 p-4 rounded-2xl" style="background: var(--card)">
+          <div class="skeleton w-20 h-20 rounded-2xl shrink-0" />
+          <div class="flex-1 flex flex-col gap-2">
+            <div class="skeleton h-5 w-3/4" />
+            <div class="skeleton h-4 w-1/3" />
+            <div class="skeleton h-4 w-1/2" />
+          </div>
+        </div>
+      </div>
+
+      <EmptyState v-else-if="recentMemories.length === 0" message="No memories yet — start capturing moments together." />
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <div
@@ -85,9 +109,12 @@
       </div>
     </div>
 
+    <!-- Upcoming trip banner skeleton -->
+    <div v-if="tripStore.loading" class="skeleton rounded-2xl h-24" />
+
     <!-- Upcoming trip banner -->
     <div
-      v-if="upcomingTrips[0]"
+      v-else-if="upcomingTrips[0]"
       class="flex items-center justify-between p-5 rounded-2xl"
       style="background: var(--gradient-primary)"
     >
@@ -124,7 +151,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import dayjs from 'dayjs'
 import { useRouter } from 'vue-router'
 import { Heart, Camera, MapPin } from '@lucide/vue'
@@ -139,6 +166,14 @@ const authStore = useAuthStore()
 const memoryStore = useMemoryStore()
 const tripStore = useTripStore()
 const galleryStore = useGalleryStore()
+
+const isLoading = computed(() => memoryStore.loading || tripStore.loading || galleryStore.loading)
+
+onMounted(() => {
+  memoryStore.fetchAll()
+  tripStore.fetchAll()
+  galleryStore.fetchAll()
+})
 
 const startDate = computed(() => authStore.couple?.start_date || '2022-02-14')
 const daysTogether = computed(() => dayjs().diff(dayjs(startDate.value), 'day'))
