@@ -20,6 +20,9 @@ dist/
 .env.local
 .env.*.local
 
+# Root env example contains real credentials
+.env.example
+
 # macOS
 .DS_Store
 
